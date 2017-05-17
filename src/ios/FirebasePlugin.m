@@ -19,6 +19,7 @@
 
 @synthesize notificationCallbackId;
 @synthesize tokenRefreshCallbackId;
+@synthesize grantPermissionCallbackId;
 @synthesize notificationStack;
 
 static NSInteger const kNotificationStackSize = 10;
@@ -70,6 +71,7 @@ static FirebasePlugin *firebasePlugin;
     [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
 }
 - (void)grantPermission:(CDVInvokedUrlCommand *)command {
+    self.grantPermissionCallbackId = command.callbackId;
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max) {
         if ([[UIApplication sharedApplication]respondsToSelector:@selector(registerUserNotificationSettings:)]) {
             UIUserNotificationType notificationTypes =
@@ -93,6 +95,8 @@ static FirebasePlugin *firebasePlugin;
         [[UNUserNotificationCenter currentNotificationCenter]
           requestAuthorizationWithOptions:authOptions
           completionHandler:^(BOOL granted, NSError * _Nullable error) {
+              CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:granted];
+              [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
           }
         ];
         [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
@@ -101,9 +105,6 @@ static FirebasePlugin *firebasePlugin;
 
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     }
-
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)setBadgeNumber:(CDVInvokedUrlCommand *)command {
