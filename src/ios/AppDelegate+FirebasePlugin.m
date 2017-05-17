@@ -108,6 +108,17 @@
     [FirebasePlugin.firebasePlugin sendNotification:mutableUserInfo];
 }
 
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max) {
+        if (FirebasePlugin.firebasePlugin.grantPermissionCallbackId != nil) {
+            BOOL granted = notificationSettings.types != UIUserNotificationTypeNone;
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:granted];
+            [FirebasePlugin.firebasePlugin.commandDelegate sendPluginResult:pluginResult callbackId:FirebasePlugin.firebasePlugin.grantPermissionCallbackId];
+        }
+    }
+}
+
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
        willPresentNotification:(UNNotification *)notification
