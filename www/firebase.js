@@ -115,3 +115,7 @@ exports.setDefaults = function (defaults, namespace, success, error) {
     }
     exec(success, error, "FirebasePlugin", "setDefaults", args);
 };
+
+exports.getNumOfNotiStack = function (success, error) {
+    exec(success, error, "FirebasePlugin", "getNumOfNotiStack", []);
+};

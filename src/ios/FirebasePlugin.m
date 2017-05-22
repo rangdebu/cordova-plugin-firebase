@@ -284,4 +284,14 @@ static FirebasePlugin *firebasePlugin;
     }];
 }
 
+- (void)getNumOfNotiStack:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        int num = 0;
+        if (self.notificationStack != nil)
+            num = [self.notificationStack count];
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:num];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
 @end

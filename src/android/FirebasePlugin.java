@@ -133,6 +133,9 @@ public class FirebasePlugin extends CordovaPlugin {
             if (args.length() > 1) this.setDefaults(callbackContext, args.getJSONObject(0), args.getString(1));
             else this.setDefaults(callbackContext, args.getJSONObject(0), null);
             return true;
+        } else if (action.equals("getNumOfNotiStack")) {
+            this.getNumOfNotiStack(callbackContext);
+            return true;
         }
         return false;
     }
@@ -576,5 +579,16 @@ public class FirebasePlugin extends CordovaPlugin {
             map.put(key, value);
         }
         return map;
+    }
+
+    private void getNumOfNotiStack(final CallbackContext callbackContext) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                int num = 0;
+                if (FirebasePlugin.notificationStack != null)
+                    num = FirebasePlugin.notificationStack.size();
+                callbackContext.success(num);
+            }
+        });
     }
 }
