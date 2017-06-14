@@ -4,9 +4,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.app.Notification;
@@ -44,6 +46,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         String title;
         String text;
         String id;
+        String forceStart = "false";
         if (remoteMessage.getNotification() != null) {
             title = remoteMessage.getNotification().getTitle();
             text = remoteMessage.getNotification().getBody();
@@ -52,6 +55,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             title = remoteMessage.getData().get("title");
             text = remoteMessage.getData().get("body");
             id = remoteMessage.getData().get("id");
+            forceStart = remoteMessage.getData().get("force-start");
         }
 
         if(TextUtils.isEmpty(id)){
@@ -68,6 +72,15 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         // TODO: Add option to developer to configure if show notification when app on foreground
         if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (!remoteMessage.getData().isEmpty())) {
             boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
+            if ("true".equals(forceStart) && showNotification) {
+                showNotification = false;
+                PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
+                PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+                wakeLock.acquire(30 * 1000);
+                PackageManager pm = getPackageManager();
+                Intent intent = pm.getLaunchIntentForPackage(getApplicationContext().getPackageName());
+                startActivity(intent);
+            }
             sendNotification(id, title, text, remoteMessage.getData(), showNotification);
         }
     }
