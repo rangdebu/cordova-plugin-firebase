@@ -167,6 +167,12 @@ public class FirebasePlugin extends CordovaPlugin {
     }
 
     @Override
+    public void onDestroy() {
+        FirebasePlugin.notificationCallbackContext = null;
+        FirebasePlugin.tokenRefreshCallbackContext = null;
+    }
+
+    @Override
     public void onReset() {
         FirebasePlugin.notificationCallbackContext = null;
         FirebasePlugin.tokenRefreshCallbackContext = null;
