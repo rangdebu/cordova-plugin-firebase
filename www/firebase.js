@@ -119,3 +119,7 @@ exports.setDefaults = function (defaults, namespace, success, error) {
     }
     exec(success, error, "FirebasePlugin", "setDefaults", args);
 };
+
+exports.getApplicationInBackground = function (success, error) {
+    exec(success, error, "FirebasePlugin", "getApplicationInBackground", []);
+};

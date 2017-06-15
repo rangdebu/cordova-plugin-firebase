@@ -136,6 +136,9 @@ public class FirebasePlugin extends CordovaPlugin {
             if (args.length() > 1) this.setDefaults(callbackContext, args.getJSONObject(0), args.getString(1));
             else this.setDefaults(callbackContext, args.getJSONObject(0), null);
             return true;
+        } else if (action.equals("getApplicationInBackground")) {
+            this.getApplicationInBackground(callbackContext);
+            return true;
         }
         return false;
     }
@@ -602,5 +605,13 @@ public class FirebasePlugin extends CordovaPlugin {
             map.put(key, value);
         }
         return map;
+    }
+
+    private void getApplicationInBackground(final CallbackContext callbackContext) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, inBackground));
+            }
+        });
     }
 }

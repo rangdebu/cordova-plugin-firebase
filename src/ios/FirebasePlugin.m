@@ -1,6 +1,7 @@
 #import "FirebasePlugin.h"
 #import <Cordova/CDV.h>
 #import "AppDelegate.h"
+#import "AppDelegate+FirebasePlugin.h"
 #import "Firebase.h"
 @import FirebaseInstanceID;
 @import FirebaseMessaging;
@@ -295,6 +296,15 @@ static FirebasePlugin *firebasePlugin;
         FIRRemoteConfig* remoteConfig = [FIRRemoteConfig remoteConfig];
         NSString* value = remoteConfig[key].stringValue;
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:value];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+- (void)getApplicationInBackground:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^{
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        BOOL inBackground = [appDelegate.applicationInBackground boolValue];
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:inBackground];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
