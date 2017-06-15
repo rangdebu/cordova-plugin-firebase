@@ -152,6 +152,9 @@ public class FirebasePlugin extends CordovaPlugin {
         } else if (action.equals("verifyPhoneNumber")) {
             this.verifyPhoneNumber(callbackContext, args.getString(0), args.getInt(1));
             return true;
+        } else if (action.equals("getApplicationInBackground")) {
+            this.getApplicationInBackground(callbackContext);
+            return true;
         }
         return false;
     }
@@ -696,6 +699,14 @@ public class FirebasePlugin extends CordovaPlugin {
                 } catch (Exception e) {
                     callbackContext.error(e.getMessage());
                 }
+            }
+        });
+    }
+
+    private void getApplicationInBackground(final CallbackContext callbackContext) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, inBackground));
             }
         });
     }
