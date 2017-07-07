@@ -18,6 +18,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 import java.util.Random;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 public class FirebasePluginMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FirebasePlugin";
@@ -44,6 +46,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         String title;
         String text;
         String id;
+        String badge = null;
         if (remoteMessage.getNotification() != null) {
             title = remoteMessage.getNotification().getTitle();
             text = remoteMessage.getNotification().getBody();
@@ -52,6 +55,12 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
             title = remoteMessage.getData().get("title");
             text = remoteMessage.getData().get("body");
             id = remoteMessage.getData().get("id");
+            badge = remoteMessage.getData().get("badge");
+        }
+
+        if (badge != null) {
+            int badgeCount = Integer.parseInt(badge);
+            ShortcutBadger.applyCount(getApplicationContext(), badgeCount);
         }
 
         if(TextUtils.isEmpty(id)){
