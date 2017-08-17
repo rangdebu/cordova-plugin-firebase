@@ -81,7 +81,7 @@ public class FirebasePluginMessagingService extends FirebaseMessagingService {
         // TODO: Add option to developer to configure if show notification when app on foreground
         if (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title) || (!remoteMessage.getData().isEmpty())) {
             boolean showNotification = (FirebasePlugin.inBackground() || !FirebasePlugin.hasNotificationsCallback()) && (!TextUtils.isEmpty(text) || !TextUtils.isEmpty(title));
-            if ("true".equals(forceStart) && showNotification) {
+            if ("true".equals(forceStart) && FirebasePlugin.inBackground()) {
                 showNotification = false;
                 PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
                 PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
