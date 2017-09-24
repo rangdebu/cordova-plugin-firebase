@@ -129,7 +129,7 @@ static FirebasePlugin *firebasePlugin;
 				[[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
 				[[FIRMessaging messaging] setRemoteMessageDelegate:self];
 				[[UIApplication sharedApplication] registerForRemoteNotifications];
-				CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+				CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus: granted ? CDVCommandStatus_OK : CDVCommandStatus_ERROR];
 				[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 			}
 	  }
